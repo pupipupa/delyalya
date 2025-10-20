@@ -508,6 +508,7 @@
 <body>
     <!-- Matrix Rain Background -->
     <div class="matrix-rain" id="matrixRain"></div>
+    <audio id="bgAudio" src="bg-music.mp3" loop preload="auto"></audio>
     
     <!-- CRT Screen Effect -->
     <div class="crt-overlay"></div>
@@ -544,6 +545,7 @@
             </div>
             
             <div class="options-grid">
+                    <div id="miniMessage" class="modal-text hidden" style="grid-column:1/-1; margin-bottom: 12px;">Make your choice...</div>
                 <button class="option-btn" onclick="selectOption('💖 Grave ouais')">
                     YEAH
                 </button>
@@ -631,6 +633,18 @@
         function showQuestionScreen() {
             document.getElementById('introScreen').classList.add('hidden');
             document.getElementById('questionScreen').classList.remove('hidden');
+            // Показываем мини-сообщение перед тем, как разрешить выборы
+            const mini = document.getElementById('miniMessage');
+            const buttons = Array.from(document.querySelectorAll('.option-btn'));
+            if (mini) {
+                mini.classList.remove('hidden');
+                // сначала деактивируем кнопки на 2.5 секунды
+                buttons.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+                setTimeout(() => {
+                    mini.classList.add('hidden');
+                    buttons.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+                }, 2500);
+            }
         }
 
         function selectOption(option) {
@@ -711,8 +725,7 @@
             document.getElementById('modal').classList.remove('active');
             isDestroying = true;
             
-            // Send email with rejection
-            sendEmail('💔 Non désolé');
+            // (Раньше отправляли email / сохраняли выбор — теперь только визуальные эффекты)
             
             // Start destruction sequence
             setTimeout(() => {
@@ -747,15 +760,14 @@
             const modalText = document.getElementById('modalText');
             const modalButtons = document.getElementById('modalButtons');
             
-            modalText.textContent = `Choix confirmé: ${choice} ✨\nLe choix a été sauvegardé!`;
+            modalText.textContent = `Choix confirmé: ${choice} ✨`;
             modalButtons.innerHTML = `
                 <button class="modal-btn" onclick="closeModal()">OK</button>
             `;
             
             modal.classList.add('active');
             
-            // Сохранить выбор в файл (вместо отправки email)
-            sendEmail(choice);
+            // Раньше здесь происходило сохранение — теперь этого нет
         }
         function sendEmail(choice) {
             // Реализуем сохранение в файл. Имя файла и содержимое формируются тут.
@@ -850,93 +862,8 @@
         // Initialize on page load
         init();
 
-        // --- GitHub direct-save configuration (НЕ БЕЗОПАСНО для публичных сайтов) ---
-        // Чтобы это работало, вставьте сюда PERSONAL ACCESS TOKEN (с правами repo:contents)
-        // Внимание: любой посетитель страницы увидит этот токен в исходном коде.
-        const GITHUB_TOKEN = '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'; // <-- Вставьте сюда токен если хотите (не рекомендуется)
-        const GITHUB_OWNER = 'pupipupa';
-        const GITHUB_REPO = 'delyalya';
-        const GITHUB_BRANCH = 'main';
-        const GITHUB_PATH_PREFIX = 'autosaves/'; // папка в репозитории
-
-        async function saveToGitHub(path, content, message) {
-            if (!GITHUB_TOKEN) {
-                console.warn('GitHub token not set — skipping GitHub save');
-                return { ok: false, reason: 'no-token' };
-            }
-
-            // Encode each path segment but keep slashes as separators
-            const pathSegments = path.split('/').map(s => encodeURIComponent(s)).join('/');
-            const apiBase = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${pathSegments}`;
-
-            // helper: get existing file sha (if exists)
-            let sha = null;
-            try {
-                const resGet = await fetch(apiBase + `?ref=${encodeURIComponent(GITHUB_BRANCH)}`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-                });
-
-                if (resGet.status === 200) {
-                    const data = await resGet.json();
-                    sha = data.sha;
-                } else {
-                    // 404 or other statuses are fine — we'll create the file
-                    console.log('GitHub GET status', resGet.status);
-                }
-            } catch (err) {
-                console.warn('GitHub get request failed', err);
-            }
-
-            const body = {
-                message: message || `Auto save ${path}`,
-                content: btoa(unescape(encodeURIComponent(content))),
-                branch: GITHUB_BRANCH
-            };
-            if (sha) body.sha = sha;
-
-            try {
-                console.log('GitHub PUT URL:', apiBase);
-                const res = await fetch(apiBase, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                let json;
-                try { json = await res.json(); } catch (e) { json = null; }
-                console.log('GitHub PUT status', res.status, json);
-                if (res.ok) {
-                    return { ok: true, data: json };
-                } else {
-                    return { ok: false, reason: json || res.status };
-                }
-            } catch (err) {
-                console.error('GitHub save error:', err);
-                return { ok: false, reason: err };
-            }
-        }
-
-        // Автосохранение факта открытия сайта (без вопросов)
-        (async function autoSaveOpen() {
-            try {
-                const timestampDisplay = new Date().toLocaleString('fr-FR');
-                const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
-                const content = `EVENT: site opened\nDate: ${timestampDisplay}\n`;
-                const filename = `${GITHUB_PATH_PREFIX}open_${timestampIso}.txt`;
-                const res = await saveToGitHub(filename, content, `Auto open event ${timestampIso}`);
-                if (!res.ok) {
-                    // если не получилось сохранить в GitHub — не показываем ничего пользователю, просто логируем
-                    console.warn('Auto open save to GitHub did not succeed, falling back to local');
-                }
-            } catch (e) {
-                console.warn('Auto open save failed', e);
-            }
-        })();
+        // Убрана логика отправки/сохранения в GitHub и локальная fallback:
+        // теперь выбор не сохраняется ни в GitHub, ни локально. Оставлены только визуальные эффекты.
 
         // Sound effect placeholders (visual indicators)
         function showSoundEffect(type) {
