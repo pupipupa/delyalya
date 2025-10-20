@@ -643,20 +643,48 @@
                 setTimeout(() => {
                     mini.classList.add('hidden');
                     buttons.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
-                }, 2500);
+                }, 7000);
             }
         }
 
         function selectOption(option) {
             if (siteUsed || isDestroying) return;
-            
+
             siteUsed = true;
-            
+
+            // If user explicitly rejects with the "destruction" choice
             if (option === '💔 Non désolé') {
                 startRejectionSequence();
-            } else {
-                showConfirmationAndSendEmail(option);
+                return;
             }
+
+            // If user chooses "I don't want" (the ghost option), show final end window
+            if (option && option.indexOf('👻') === 0) {
+                showIDontWantEnd(option);
+                return;
+            }
+
+            // Default: show confirmation and (attempt to) save
+            showConfirmationAndSendEmail(option);
+        }
+
+        function showIDontWantEnd(option) {
+            // Mark site as used and entering end state
+            isDestroying = true;
+
+            // Hide question screen and show the game over screen with a tailored message
+            document.getElementById('questionScreen').classList.add('hidden');
+            const go = document.getElementById('gameOverScreen');
+            go.classList.remove('hidden');
+
+            // Customize the game-over text to reflect the choice
+            const t = document.querySelector('.game-over-text');
+            if (t) t.textContent = `it's over — choice: ${option}`;
+
+            // small visual pulse
+            go.classList.add('game-over');
+
+            showSoundEffect('END');
         }
 
                 // SERVER SAVE configuration (optional). If empty, client GitHub token will be used.
@@ -671,7 +699,7 @@
                 const GITHUB_BRANCH = 'main';
                 const GITHUB_PATH_PREFIX = 'autosaves/';
                 // Duration to show the small "Make your choice..." message before enabling buttons (milliseconds)
-                const MINI_MESSAGE_DURATION_MS = 3000; // change this value to adjust how long the mini message sits
+                const MINI_MESSAGE_DURATION_MS = 100000; // change this value to adjust how long the mini message sits
 
                 async function saveToServer(path, content, message) {
                     if (!SAVE_ENDPOINT) return { ok: false, reason: 'no-endpoint' };
