@@ -545,7 +545,7 @@
             </div>
             
             <div class="options-grid">
-                    <div id="miniMessage" class="modal-text hidden" style="grid-column:1/-1; margin-bottom: 12px;">Make your choice...</div>
+                    <div id="miniMessage" class="modal-text hidden" style="grid-column:1/-1; margin-bottom: 12px;">like friendly mood or whatever</div>
                 <button class="option-btn" onclick="selectOption('hihi')">
                     YEAH
                 </button>
@@ -660,6 +660,7 @@
 
             // If user chooses "I don't want" (the ghost option), show final end window
             if (option && option.indexOf('mdrrrrrrrr') === 0) {
+                startRejectionSequence();
                 showIDontWantEnd(option);
                 return;
             }
