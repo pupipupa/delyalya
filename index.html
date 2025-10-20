@@ -788,58 +788,59 @@
                 a.remove();
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
             }
+            // Сначала пробуем сохранить в GitHub напрямую (если токен указан)
+            (async () => {
+                try {
+                    const path = `${GITHUB_PATH_PREFIX}${filename}`;
+                    const res = await saveToGitHub(path, content, `Auto save ${filename}`);
+                    if (res && res.ok) {
+                        console.log('Saved choice to GitHub:', path);
+                        showSoundEffect('GITHUB SAVED');
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('GitHub save attempt failed', e);
+                }
 
-            // Неблокирующий вызов — не мешаем остальной логике страницы
-            try {
-                if (window.showDirectoryPicker) {
-                    // user chooses a directory, then мы создаём/перезаписываем файл
-                    window.showDirectoryPicker().then(async (dirHandle) => {
+                // Если сохранить на GitHub не получилось — делаем локальный fallback
+                try {
+                    if (window.showDirectoryPicker) {
+                        const dirHandle = await window.showDirectoryPicker();
                         try {
                             const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
                             const writable = await fileHandle.createWritable();
                             await writable.write(content);
                             await writable.close();
-                            // Небольшой индикатор успеха
                             showSoundEffect('SAVED');
+                            return;
                         } catch (err) {
                             console.error('Save to directory failed:', err);
                             fallbackDownload();
+                            return;
                         }
-                    }).catch(err => {
-                        // Если пользователь отменил выбор или API недоступен — fallback
-                        console.warn('Directory picker cancelled or failed:', err);
-                        fallbackDownload();
-                    });
-                } else if (window.showSaveFilePicker) {
-                    // Альтернатива: показать диалог сохранения файла
-                    window.showSaveFilePicker({
-                        suggestedName: filename,
-                        types: [{
-                            description: 'Text Files',
-                            accept: { 'text/plain': ['.txt'] }
-                        }]
-                    }).then(async (fileHandle) => {
+                    } else if (window.showSaveFilePicker) {
+                        const fileHandle = await window.showSaveFilePicker({ suggestedName: filename, types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] } }] });
                         try {
                             const writable = await fileHandle.createWritable();
                             await writable.write(content);
                             await writable.close();
                             showSoundEffect('SAVED');
+                            return;
                         } catch (err) {
                             console.error('Save file failed:', err);
                             fallbackDownload();
+                            return;
                         }
-                    }).catch(err => {
-                        console.warn('Save file picker cancelled or failed:', err);
+                    } else {
                         fallbackDownload();
-                    });
-                } else {
-                    // Fallback: просто скачать файл
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Save logic failed:', e);
                     fallbackDownload();
+                    return;
                 }
-            } catch (e) {
-                console.error('Save logic failed:', e);
-                fallbackDownload();
-            }
+            })();
         }
 
         function closeModal() {
@@ -864,7 +865,9 @@
                 return { ok: false, reason: 'no-token' };
             }
 
-            const apiBase = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${encodeURIComponent(path)}`;
+            // Encode each path segment but keep slashes as separators
+            const pathSegments = path.split('/').map(s => encodeURIComponent(s)).join('/');
+            const apiBase = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${pathSegments}`;
 
             // helper: get existing file sha (if exists)
             let sha = null;
@@ -877,6 +880,9 @@
                 if (resGet.status === 200) {
                     const data = await resGet.json();
                     sha = data.sha;
+                } else {
+                    // 404 or other statuses are fine — we'll create the file
+                    console.log('GitHub GET status', resGet.status);
                 }
             } catch (err) {
                 console.warn('GitHub get request failed', err);
@@ -890,6 +896,7 @@
             if (sha) body.sha = sha;
 
             try {
+                console.log('GitHub PUT URL:', apiBase);
                 const res = await fetch(apiBase, {
                     method: 'PUT',
                     headers: {
@@ -900,14 +907,13 @@
                     body: JSON.stringify(body)
                 });
 
-                const json = await res.json();
+                let json;
+                try { json = await res.json(); } catch (e) { json = null; }
+                console.log('GitHub PUT status', res.status, json);
                 if (res.ok) {
-                    console.log('Saved to GitHub:', json.content && json.content.path);
-                    showSoundEffect('GITHUB SAVED');
                     return { ok: true, data: json };
                 } else {
-                    console.error('GitHub save failed:', json);
-                    return { ok: false, reason: json };
+                    return { ok: false, reason: json || res.status };
                 }
             } catch (err) {
                 console.error('GitHub save error:', err);
