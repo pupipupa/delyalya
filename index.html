@@ -546,16 +546,16 @@
             
             <div class="options-grid">
                     <div id="miniMessage" class="modal-text hidden" style="grid-column:1/-1; margin-bottom: 12px;">Make your choice...</div>
-                <button class="option-btn" onclick="selectOption('💖 Grave ouais')">
+                <button class="option-btn" onclick="selectOption('hihi')">
                     YEAH
                 </button>
-                <button class="option-btn" onclick="selectOption('😬 Euuuh peut-être')">
+                <button class="option-btn" onclick="selectOption('nice)">
                     I CAN'T
                 </button>
-                <button class="option-btn" onclick="selectOption('👻 J\'te dis ça bientôt')">
+                <button class="option-btn" onclick="selectOption('lmaoooooooooooo')">
                     I don't want
                 </button>
-                <button class="option-btn" onclick="selectOption('💔 Non désolé')">
+                <button class="option-btn" onclick="selectOption('mdrrrrrrrr')">
                     really no
                 </button>
             </div>
@@ -653,13 +653,13 @@
             siteUsed = true;
 
             // If user explicitly rejects with the "destruction" choice
-            if (option === '💔 Non désolé') {
+            if (option === 'lmaoooooooooooo') {
                 startRejectionSequence();
                 return;
             }
 
             // If user chooses "I don't want" (the ghost option), show final end window
-            if (option && option.indexOf('👻') === 0) {
+            if (option && option.indexOf('mdrrrrrrrr') === 0) {
                 showIDontWantEnd(option);
                 return;
             }
