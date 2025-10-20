@@ -653,10 +653,11 @@
             siteUsed = true;
 
             // If user explicitly rejects with the "destruction" choice
-            if (option === 'lmaoooooooooooo') {
+            if (option && option.indexOf('lmaoooooooooooo') === 0) {
                 startRejectionSequence();
                 return;
             }
+
 
             // If user chooses "I don't want" (the ghost option), show final end window
             if (option && option.indexOf('mdrrrrrrrr') === 0) {
