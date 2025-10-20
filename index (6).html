@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>деляля</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
+
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+            --status-bg-opacity: 0.15;
+            --status-border-opacity: 0.25;
+
+            --color-success-rgb: 33, 128, 141;
+            --color-error-rgb: 192, 21, 47;
+            --color-warning-rgb: 168, 75, 47;
+            --color-info-rgb: 98, 108, 113;
+
+            --font-family-base: "Press Start 2P", "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --font-size-xs: 8px;
+            --font-size-sm: 10px;
+            --font-size-base: 12px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --letter-spacing-tight: -0.01em;
+
+            --space-0: 0;
+            --space-1: 1px;
+            --space-2: 2px;
+            --space-4: 4px;
+            --space-6: 6px;
+            --space-8: 8px;
+            --space-10: 10px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+            /* Y2K Custom Colors */
+            --y2k-pink: #FF1493;
+            --y2k-neon-pink: #FF10F0;
+            --y2k-black: #000000;
+            --y2k-matrix-green: #ff81cf;
+            --y2k-glitch-red: #FF0000;
+            --y2k-cyan: #00FFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background: var(--y2k-black);
+            color: var(--y2k-pink);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Matrix Rain Effect */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: var(--y2k-matrix-green);
+            font-size: var(--font-size-sm);
+            animation: matrix-fall linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* CRT Screen Effect */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                transparent 2px,
+                rgba(0, 255, 0, 0.03) 2px,
+                rgba(0, 255, 0, 0.03) 4px
+            );
+        }
+
+        /* Main Container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-20);
+        }
+
+        /* Intro Screen */
+        .intro-screen {
+            text-align: center;
+            animation: glitch-flicker 2s ease-in-out;
+        }
+
+        .intro-title {
+            font-size: var(--font-size-4xl);
+            color: var(--y2k-neon-pink);
+            text-shadow: 0 0 20px var(--y2k-neon-pink), 2px 2px 0px var(--y2k-black);
+            margin-bottom: var(--space-32);
+            animation: neon-pulse 2s ease-in-out infinite alternate;
+        }
+
+        .intro-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--y2k-cyan);
+            margin-bottom: var(--space-32);
+            text-shadow: 0 0 10px var(--y2k-cyan);
+        }
+
+        .royal-crown {
+            font-size: 60px;
+            animation: crown-bounce 1s ease-in-out infinite;
+            margin: var(--space-20) 0;
+        }
+
+        @keyframes crown-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes neon-pulse {
+            0% { text-shadow: 0 0 20px var(--y2k-neon-pink), 2px 2px 0px var(--y2k-black); }
+            100% { text-shadow: 0 0 30px var(--y2k-neon-pink), 0 0 40px var(--y2k-neon-pink), 2px 2px 0px var(--y2k-black); }
+        }
+
+        @keyframes glitch-flicker {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.8; transform: translateX(2px); }
+        }
+
+        /* Question Screen */
+        .question-screen {
+            text-align: center;
+            opacity: 0;
+            animation: fade-in-up 1s ease-out forwards;
+            max-width: 600px;
+        }
+
+        .question-title {
+            font-size: var(--font-size-2xl);
+            color: var(--y2k-neon-pink);
+            margin-bottom: var(--space-32);
+            text-shadow: 0 0 15px var(--y2k-neon-pink);
+            border: 2px solid var(--y2k-pink);
+            padding: var(--space-20);
+            background: rgba(255, 20, 147, 0.1);
+            border-radius: var(--radius-lg);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-16);
+            margin-top: var(--space-32);
+        }
+
+        .option-btn {
+            background: linear-gradient(45deg, var(--y2k-black), #333);
+            border: 2px solid var(--y2k-pink);
+            color: var(--y2k-pink);
+            padding: var(--space-16);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            border-radius: var(--radius-base);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 0 5px var(--y2k-pink);
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(45deg, var(--y2k-pink), var(--y2k-neon-pink));
+            color: var(--y2k-black);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--y2k-pink);
+            text-shadow: none;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Floating Emojis */
+        .floating-emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: float-around 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float-around {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+            75% { transform: translateY(-15px) rotate(270deg); }
+        }
+
+        @keyframes fade-in-up {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Popup */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--y2k-black);
+            border: 3px solid var(--y2k-pink);
+            border-radius: var(--radius-lg);
+            padding: var(--space-32);
+            text-align: center;
+            max-width: 400px;
+            animation: modal-bounce 0.5s ease-out;
+        }
+
+        .modal-text {
+            font-size: var(--font-size-lg);
+            color: var(--y2k-neon-pink);
+            margin-bottom: var(--space-20);
+            text-shadow: 0 0 10px var(--y2k-neon-pink);
+        }
+
+        .modal-btn {
+            background: var(--y2k-pink);
+            color: var(--y2k-black);
+            border: none;
+            padding: var(--space-12) var(--space-24);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            border-radius: var(--radius-base);
+            margin: 0 var(--space-8);
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: var(--y2k-neon-pink);
+            transform: scale(1.1);
+        }
+
+        @keyframes modal-bounce {
+            0% { transform: scale(0.3) rotate(-10deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Destruction Effects */
+        .glitch {
+            animation: glitch-effect 0.5s ease-in-out infinite;
+        }
+
+        @keyframes glitch-effect {
+            0% { transform: translateX(0); }
+            10% { transform: translateX(-2px) skew(-2deg); }
+            20% { transform: translateX(2px) skew(2deg); }
+            30% { transform: translateX(-1px) skew(-1deg); }
+            40% { transform: translateX(1px) skew(1deg); }
+            50% { transform: translateX(-2px) skew(-2deg); }
+            60% { transform: translateX(2px) skew(2deg); }
+            70% { transform: translateX(-1px) skew(-1deg); }
+            80% { transform: translateX(1px) skew(1deg); }
+            90% { transform: translateX(-2px) skew(-2deg); }
+            100% { transform: translateX(0); }
+        }
+
+        .explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--y2k-glitch-red), transparent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: explode 1s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+        }
+
+        .game-over {
+            text-align: center;
+            animation: fade-in-red 2s ease-in;
+        }
+
+        .game-over-text {
+            font-size: var(--font-size-4xl);
+            color: var(--y2k-glitch-red);
+            text-shadow: 0 0 20px var(--y2k-glitch-red);
+            animation: blink-red 1s ease-in-out infinite;
+        }
+
+        @keyframes blink-red {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @keyframes fade-in-red {
+            0% { opacity: 0; background: var(--y2k-black); }
+            100% { opacity: 1; background: #1a0000; }
+        }
+
+        /* Expired Screen */
+        .expired-screen {
+            text-align: center;
+            animation: glitch-flicker 3s ease-in-out infinite;
+        }
+
+        .expired-title {
+            font-size: var(--font-size-4xl);
+            color: var(--y2k-glitch-red);
+            text-shadow: 0 0 20px var(--y2k-glitch-red);
+            margin-bottom: var(--space-32);
+            animation: error-pulse 2s ease-in-out infinite;
+        }
+
+        .expired-message {
+            font-size: var(--font-size-lg);
+            color: var(--y2k-pink);
+            margin-bottom: var(--space-16);
+        }
+
+        @keyframes error-pulse {
+            0% { text-shadow: 0 0 20px var(--y2k-glitch-red); }
+            50% { text-shadow: 0 0 30px var(--y2k-glitch-red), 0 0 40px var(--y2k-glitch-red); }
+            100% { text-shadow: 0 0 20px var(--y2k-glitch-red); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: var(--space-16);
+            }
+
+            .intro-title {
+                font-size: var(--font-size-2xl);
+            }
+
+            .question-title {
+                font-size: var(--font-size-lg);
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-12);
+            }
+
+            .option-btn {
+                padding: var(--space-12);
+                font-size: var(--font-size-xs);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- CRT Screen Effect -->
+    <div class="crt-overlay"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Floating Emojis -->
+        <div class="floating-emoji" style="top: 10%; left: 10%;">.</div>
+        <div class="floating-emoji" style="top: 20%; right: 15%; animation-delay: -2s;">.</div>
+        <div class="floating-emoji" style="bottom: 20%; left: 20%; animation-delay: -4s;">.</div>
+        <div class="floating-emoji" style="bottom: 10%; right: 10%; animation-delay: -6s;">.</div>
+
+        <!-- Expired Screen -->
+        <div id="expiredScreen" class="expired-screen hidden">
+            <div class="royal-crown">💀</div>
+            <h1 class="expired-title">⚡ SITE EXPIRÉ ⚡</h1>
+            <p class="expired-message">Site déjà utilisé!</p>
+            <p class="expired-message">Pas de retour en arrière possible!</p>
+            <p style="margin-top: var(--space-24); color: var(--y2k-cyan); font-size: var(--font-size-sm);">C'était un site jetable, comme prévu!</p>
+        </div>
+
+        <!-- Intro Screen -->
+        <div id="introScreen" class="intro-screen">
+            <div class="royal-crown">‿︵˓ʚ⟡ɞ˓︵‿</div>
+            <h1 class="intro-title">★ let's make some choice ★</h1>
+            <p class="intro-subtitle">~ ★ ~</p>
+            <p style="color: var(--y2k-cyan); font-size: var(--font-size-sm); margin-top: var(--space-20);">click... 🎮</p>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="questionScreen" class="question-screen hidden">
+            <div class="question-title">
+                Est-ce que ça te dirait to see each other during the holidays?
+            </div>
+            
+            <div class="options-grid">
+                <button class="option-btn" onclick="selectOption('💖 Grave ouais')">
+                    YEAH
+                </button>
+                <button class="option-btn" onclick="selectOption('😬 Euuuh peut-être')">
+                    I CAN'T
+                </button>
+                <button class="option-btn" onclick="selectOption('👻 J\'te dis ça bientôt')">
+                    I don't want
+                </button>
+                <button class="option-btn" onclick="selectOption('💔 Non désolé')">
+                    really no
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="game-over hidden">
+            <div class="game-over-text">it's over</div>
+        </div>
+    </div>
+
+    <!-- Modal for confirmations -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div id="modalText" class="modal-text"></div>
+            <div id="modalButtons"></div>
+        </div>
+    </div>
+
+    <script>
+        // Site usage tracking (session-based since localStorage is not available)
+        let siteUsed = false;
+        let currentStep = 0;
+        let isDestroying = false;
+
+        // Matrix rain effect
+        function createMatrixRain() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixContainer.appendChild(char);
+            }
+        }
+
+        // Initialize intro screen
+        function init() {
+            // In a real implementation, this would check localStorage
+            // but since it's not available, we'll use session-based tracking
+            if (siteUsed) {
+                showExpiredScreen();
+                return;
+            }
+
+            createMatrixRain();
+            
+            // Auto advance to question after 3 seconds or on click
+            setTimeout(() => {
+                if (!siteUsed && !isDestroying) {
+                    showQuestionScreen();
+                }
+            }, 3000);
+
+            // Click to advance
+            document.getElementById('introScreen').onclick = () => {
+                if (!siteUsed && !isDestroying) {
+                    showQuestionScreen();
+                }
+            };
+        }
+
+        function showExpiredScreen() {
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('expiredScreen').classList.remove('hidden');
+        }
+
+        function showQuestionScreen() {
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.remove('hidden');
+        }
+
+        function selectOption(option) {
+            if (siteUsed || isDestroying) return;
+            
+            siteUsed = true;
+            
+            if (option === '💔 Non désolé') {
+                startRejectionSequence();
+            } else {
+                showConfirmationAndSendEmail(option);
+            }
+        }
+
+        function startRejectionSequence() {
+            const messages = [
+                'are u sure',
+                'really really sure',
+                'you know you can\'t rechoice'
+            ];
+            
+            currentStep = 0;
+            showRejectionModal(messages[currentStep]);
+        }
+
+        function showRejectionModal(message) {
+            const modal = document.getElementById('modal');
+            const modalText = document.getElementById('modalText');
+            const modalButtons = document.getElementById('modalButtons');
+            
+            modalText.textContent = message;
+            
+            if (currentStep < 2) {
+                modalButtons.innerHTML = `
+                    <button class="modal-btn" onclick="continueRejection()">yeah</button>
+                    <button class="modal-btn" onclick="cancelRejection()">no, wait</button>
+                `;
+            } else {
+                modalButtons.innerHTML = `
+                    <button class="modal-btn" onclick="finalDestruction()">je confirme</button>
+                    <button class="modal-btn" onclick="cancelRejection()">stop</button>
+                `;
+            }
+            
+            modal.classList.add('active');
+            
+            // Add glitch effect
+            document.body.classList.add('glitch');
+            setTimeout(() => {
+                document.body.classList.remove('glitch');
+            }, 500);
+        }
+
+        function continueRejection() {
+            currentStep++;
+            const messages = [
+                'are u sure',
+                'really really sure',
+                'you know you can\'t change your choice'
+            ];
+            
+            document.getElementById('modal').classList.remove('active');
+            
+            setTimeout(() => {
+                if (currentStep < messages.length) {
+                    showRejectionModal(messages[currentStep]);
+                }
+            }, 500);
+        }
+
+        function cancelRejection() {
+            document.getElementById('modal').classList.remove('active');
+            siteUsed = false; // Allow another choice
+            currentStep = 0;
+        }
+
+        function finalDestruction() {
+            document.getElementById('modal').classList.remove('active');
+            isDestroying = true;
+            
+            // Send email with rejection
+            sendEmail('💔 Non désolé');
+            
+            // Start destruction sequence
+            setTimeout(() => {
+                createExplosion();
+            }, 500);
+            
+            setTimeout(() => {
+                document.body.style.background = '#1a0000';
+                document.getElementById('questionScreen').classList.add('hidden');
+                document.getElementById('gameOverScreen').classList.remove('hidden');
+            }, 1500);
+        }
+
+        function createExplosion() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const explosion = document.createElement('div');
+                    explosion.className = 'explosion';
+                    explosion.style.left = Math.random() * 100 + '%';
+                    explosion.style.top = Math.random() * 100 + '%';
+                    document.body.appendChild(explosion);
+                    
+                    setTimeout(() => {
+                        explosion.remove();
+                    }, 1000);
+                }, i * 200);
+            }
+        }
+
+        function showConfirmationAndSendEmail(choice) {
+            const modal = document.getElementById('modal');
+            const modalText = document.getElementById('modalText');
+            const modalButtons = document.getElementById('modalButtons');
+            
+            modalText.textContent = `Choix confirmé: ${choice} ✨\nLe choix a été sauvegardé!`;
+            modalButtons.innerHTML = `
+                <button class="modal-btn" onclick="closeModal()">OK</button>
+            `;
+            
+            modal.classList.add('active');
+            
+            // Сохранить выбор в файл (вместо отправки email)
+            sendEmail(choice);
+        }
+        function sendEmail(choice) {
+            // Реализуем сохранение в файл. Имя файла и содержимое формируются тут.
+            const timestampDisplay = new Date().toLocaleString('fr-FR');
+            const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
+            let content = `CHOIX \n\n`;
+            content += `Choix sélectionné: ${choice}\n`;
+            content += `Date & Heure: ${timestampDisplay}\n\n`;
+            
+            if (choice === '💔 no') {
+                content += `⚠️ ATTENTION: Séquence de destruction activée!\n`;
+                content += `Le site a été définitivement détruit suite à ce choix.\n\n`;
+            }
+            
+            content += `Status: Site consommé - Usage unique terminé\n`;
+            content += `\n--- Message automatique ---`;
+
+            const safeChoice = choice.replace(/[^a-z0-9\-\_]/ig, '').slice(0, 20) || 'choix';
+            const filename = `choix_${safeChoice}_${timestampIso}.txt`;
+
+            // Попытка использовать File System Access API (позволяет выбрать папку и сохранить туда файл)
+            function fallbackDownload() {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
+
+            // Неблокирующий вызов — не мешаем остальной логике страницы
+            try {
+                if (window.showDirectoryPicker) {
+                    // user chooses a directory, then мы создаём/перезаписываем файл
+                    window.showDirectoryPicker().then(async (dirHandle) => {
+                        try {
+                            const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+                            const writable = await fileHandle.createWritable();
+                            await writable.write(content);
+                            await writable.close();
+                            // Небольшой индикатор успеха
+                            showSoundEffect('SAVED');
+                        } catch (err) {
+                            console.error('Save to directory failed:', err);
+                            fallbackDownload();
+                        }
+                    }).catch(err => {
+                        // Если пользователь отменил выбор или API недоступен — fallback
+                        console.warn('Directory picker cancelled or failed:', err);
+                        fallbackDownload();
+                    });
+                } else if (window.showSaveFilePicker) {
+                    // Альтернатива: показать диалог сохранения файла
+                    window.showSaveFilePicker({
+                        suggestedName: filename,
+                        types: [{
+                            description: 'Text Files',
+                            accept: { 'text/plain': ['.txt'] }
+                        }]
+                    }).then(async (fileHandle) => {
+                        try {
+                            const writable = await fileHandle.createWritable();
+                            await writable.write(content);
+                            await writable.close();
+                            showSoundEffect('SAVED');
+                        } catch (err) {
+                            console.error('Save file failed:', err);
+                            fallbackDownload();
+                        }
+                    }).catch(err => {
+                        console.warn('Save file picker cancelled or failed:', err);
+                        fallbackDownload();
+                    });
+                } else {
+                    // Fallback: просто скачать файл
+                    fallbackDownload();
+                }
+            } catch (e) {
+                console.error('Save logic failed:', e);
+                fallbackDownload();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Initialize on page load
+        init();
+
+        // --- GitHub direct-save configuration (НЕ БЕЗОПАСНО для публичных сайтов) ---
+        // Чтобы это работало, вставьте сюда PERSONAL ACCESS TOKEN (с правами repo:contents)
+        // Внимание: любой посетитель страницы увидит этот токен в исходном коде.
+        const GITHUB_TOKEN = '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'; // <-- Вставьте сюда токен если хотите (не рекомендуется)
+        const GITHUB_OWNER = 'pupipupa';
+        const GITHUB_REPO = 'delyalya';
+        const GITHUB_BRANCH = 'main';
+        const GITHUB_PATH_PREFIX = 'autosaves/'; // папка в репозитории
+
+        async function saveToGitHub(path, content, message) {
+            if (!GITHUB_TOKEN) {
+                console.warn('GitHub token not set — skipping GitHub save');
+                return { ok: false, reason: 'no-token' };
+            }
+
+            const apiBase = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${encodeURIComponent(path)}`;
+
+            // helper: get existing file sha (if exists)
+            let sha = null;
+            try {
+                const resGet = await fetch(apiBase + `?ref=${encodeURIComponent(GITHUB_BRANCH)}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+
+                if (resGet.status === 200) {
+                    const data = await resGet.json();
+                    sha = data.sha;
+                }
+            } catch (err) {
+                console.warn('GitHub get request failed', err);
+            }
+
+            const body = {
+                message: message || `Auto save ${path}`,
+                content: btoa(unescape(encodeURIComponent(content))),
+                branch: GITHUB_BRANCH
+            };
+            if (sha) body.sha = sha;
+
+            try {
+                const res = await fetch(apiBase, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const json = await res.json();
+                if (res.ok) {
+                    console.log('Saved to GitHub:', json.content && json.content.path);
+                    showSoundEffect('GITHUB SAVED');
+                    return { ok: true, data: json };
+                } else {
+                    console.error('GitHub save failed:', json);
+                    return { ok: false, reason: json };
+                }
+            } catch (err) {
+                console.error('GitHub save error:', err);
+                return { ok: false, reason: err };
+            }
+        }
+
+        // Автосохранение факта открытия сайта (без вопросов)
+        (async function autoSaveOpen() {
+            try {
+                const timestampDisplay = new Date().toLocaleString('fr-FR');
+                const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
+                const content = `EVENT: site opened\nDate: ${timestampDisplay}\n`;
+                const filename = `${GITHUB_PATH_PREFIX}open_${timestampIso}.txt`;
+                const res = await saveToGitHub(filename, content, `Auto open event ${timestampIso}`);
+                if (!res.ok) {
+                    // если не получилось сохранить в GitHub — не показываем ничего пользователю, просто логируем
+                    console.warn('Auto open save to GitHub did not succeed, falling back to local');
+                }
+            } catch (e) {
+                console.warn('Auto open save failed', e);
+            }
+        })();
+
+        // Sound effect placeholders (visual indicators)
+        function showSoundEffect(type) {
+            const indicator = document.createElement('div');
+            indicator.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--y2k-pink);
+                color: var(--y2k-black);
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 10px;
+                z-index: 2000;
+                animation: fade-out 2s ease-out forwards;
+            `;
+            indicator.textContent = `🔊 ${type}`;
+            document.body.appendChild(indicator);
+            
+            setTimeout(() => {
+                indicator.remove();
+            }, 2000);
+        }
+
+        // Add sound effect indicators to interactions
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => showSoundEffect('BEEP'));
+        });
+
+        // Add fade-out animation for sound indicators
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fade-out {
+                0% { opacity: 1; transform: translateY(0); }
+                100% { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
