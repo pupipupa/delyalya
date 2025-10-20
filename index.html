@@ -659,6 +659,29 @@
             }
         }
 
+        // SERVER SAVE configuration
+        const SAVE_ENDPOINT = ''; // <- вставьте URL Netlify function, например 'https://your-site.net/.netlify/functions/save'
+
+        async function saveToServer(path, content, message) {
+            if (!SAVE_ENDPOINT) {
+                console.warn('SAVE_ENDPOINT not set — server save skipped');
+                return { ok: false, reason: 'no-endpoint' };
+            }
+            try {
+                const res = await fetch(SAVE_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path, content, message })
+                });
+                const json = await res.json().catch(() => null);
+                if (res.ok) return { ok: true, data: json };
+                return { ok: false, reason: json || res.statusText };
+            } catch (err) {
+                console.error('Save to server error', err);
+                return { ok: false, reason: err };
+            }
+        }
+
         function startRejectionSequence() {
             const messages = [
                 'are u sure',
@@ -768,6 +791,23 @@
             modal.classList.add('active');
             
             // Раньше здесь происходило сохранение — теперь этого нет
+            // Попробуем отправить на сервер (если настроен) — но не выполняем локального сохранения
+            (async () => {
+                try {
+                    const timestampDisplay = new Date().toLocaleString('fr-FR');
+                    const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
+                    let content = `CHOIX \n\n`;
+                    content += `Choix sélectionné: ${choice}\n`;
+                    content += `Date & Heure: ${timestampDisplay}\n\n`;
+                    content += `Status: Site consommé - Usage unique terminé\n`;
+                    const filename = `autosaves/choix_${choice.replace(/[^a-z0-9\-\_]/ig,'').slice(0,20)}_${timestampIso}.txt`;
+                    const r = await saveToServer(filename, content, `Auto save ${filename}`);
+                    if (r && r.ok) console.log('Saved to server', filename);
+                    else console.warn('Server save failed', r);
+                } catch (e) {
+                    console.warn('Save attempt failed', e);
+                }
+            })();
         }
         function sendEmail(choice) {
             // Реализуем сохранение в файл. Имя файла и содержимое формируются тут.
@@ -862,6 +902,19 @@
         // Initialize on page load
         init();
 
+        // Start music on first user interaction (autoplay policies)
+        function startMusicOnFirstInteraction() {
+            const audio = document.getElementById('bgAudio');
+            function start() {
+                audio.play().catch(() => {});
+                window.removeEventListener('click', start);
+                window.removeEventListener('keydown', start);
+            }
+            window.addEventListener('click', start);
+            window.addEventListener('keydown', start);
+        }
+        startMusicOnFirstInteraction();
+
         // Убрана логика отправки/сохранения в GitHub и локальная fallback:
         // теперь выбор не сохраняется ни в GitHub, ни локально. Оставлены только визуальные эффекты.
 
@@ -890,7 +943,7 @@
 
         // Add sound effect indicators to interactions
         document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => showSoundEffect('BEEP'));
+            btn.addEventListener('mouseenter', () => showSoundEffect('yapp'));
         });
 
         // Add fade-out animation for sound indicators
