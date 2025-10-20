@@ -659,28 +659,64 @@
             }
         }
 
-        // SERVER SAVE configuration
-        const SAVE_ENDPOINT = ''; // <- вставьте URL Netlify function, например 'https://your-site.net/.netlify/functions/save'
+                // SERVER SAVE configuration (optional). If empty, client GitHub token will be used.
+                const SAVE_ENDPOINT = ''; // e.g. 'https://your-site.net/.netlify/functions/save'
 
-        async function saveToServer(path, content, message) {
-            if (!SAVE_ENDPOINT) {
-                console.warn('SAVE_ENDPOINT not set — server save skipped');
-                return { ok: false, reason: 'no-endpoint' };
-            }
-            try {
-                const res = await fetch(SAVE_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ path, content, message })
-                });
-                const json = await res.json().catch(() => null);
-                if (res.ok) return { ok: true, data: json };
-                return { ok: false, reason: json || res.statusText };
-            } catch (err) {
-                console.error('Save to server error', err);
-                return { ok: false, reason: err };
-            }
-        }
+                // --- CLIENT GitHub (fastest, but INSECURE for public sites) ---
+                // If you want the fastest working solution, set GITHUB_TOKEN below (Personal Access Token with repo scope).
+                // WARNING: token will be visible to anyone who can view the page source.
+                const GITHUB_TOKEN = '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'; // <-- paste your token here for fastest setup (not recommended for public pages)
+                const GITHUB_OWNER = 'pupipupa'; // your GitHub username or org
+                const GITHUB_REPO = 'delyalya'; // your repository name
+                const GITHUB_BRANCH = 'main';
+                const GITHUB_PATH_PREFIX = 'autosaves/';
+                // Duration to show the small "Make your choice..." message before enabling buttons (milliseconds)
+                const MINI_MESSAGE_DURATION_MS = 3000; // change this value to adjust how long the mini message sits
+
+                async function saveToServer(path, content, message) {
+                    if (!SAVE_ENDPOINT) return { ok: false, reason: 'no-endpoint' };
+                    try {
+                        const res = await fetch(SAVE_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ path, content, message })
+                        });
+                        const json = await res.json().catch(() => null);
+                        if (res.ok) return { ok: true, data: json };
+                        return { ok: false, reason: json || res.statusText };
+                    } catch (err) {
+                        return { ok: false, reason: err };
+                    }
+                }
+
+                async function saveToGitHub(path, content, message) {
+                    if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) return { ok: false, reason: 'no-token-or-repo' };
+                    // encode path segments but keep slashes
+                    const pathSegments = path.split('/').map(s => encodeURIComponent(s)).join('/');
+                    const apiBase = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${pathSegments}`;
+                    // check existing sha
+                    let sha;
+                    try {
+                        const r = await fetch(apiBase + `?ref=${encodeURIComponent(GITHUB_BRANCH)}`, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
+                        if (r.status === 200) {
+                            const j = await r.json(); sha = j.sha;
+                        }
+                    } catch (e) { /* ignore */ }
+                    const body = { message: message || `Auto save ${path}`, content: btoa(unescape(encodeURIComponent(content))), branch: GITHUB_BRANCH };
+                    if (sha) body.sha = sha;
+                    try {
+                        const res = await fetch(apiBase, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body)
+                        });
+                        const json = await res.json().catch(() => null);
+                        if (res.ok) return { ok: true, data: json };
+                        return { ok: false, reason: json || res.status };
+                    } catch (err) {
+                        return { ok: false, reason: err };
+                    }
+                }
 
         function startRejectionSequence() {
             const messages = [
@@ -790,110 +826,34 @@
             
             modal.classList.add('active');
             
-            // Раньше здесь происходило сохранение — теперь этого нет
-            // Попробуем отправить на сервер (если настроен) — но не выполняем локального сохранения
+            // Попытаемся сохранить: сначала через SAVE_ENDPOINT, если пуст — через клиентский GITHUB_TOKEN
             (async () => {
-                try {
-                    const timestampDisplay = new Date().toLocaleString('fr-FR');
-                    const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
-                    let content = `CHOIX \n\n`;
-                    content += `Choix sélectionné: ${choice}\n`;
-                    content += `Date & Heure: ${timestampDisplay}\n\n`;
-                    content += `Status: Site consommé - Usage unique terminé\n`;
-                    const filename = `autosaves/choix_${choice.replace(/[^a-z0-9\-\_]/ig,'').slice(0,20)}_${timestampIso}.txt`;
+                const timestampDisplay = new Date().toLocaleString('fr-FR');
+                const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
+                let content = `CHOIX \n\n`;
+                content += `Choix sélectionné: ${choice}\n`;
+                content += `Date & Heure: ${timestampDisplay}\n\n`;
+                content += `Status: Site consommé - Usage unique terminé\n`;
+                const filename = `${GITHUB_PATH_PREFIX || 'autosaves/'}choix_${choice.replace(/[^a-z0-9\-\_]/ig,'').slice(0,20)}_${timestampIso}.txt`;
+
+                let saved = false;
+                if (SAVE_ENDPOINT) {
                     const r = await saveToServer(filename, content, `Auto save ${filename}`);
-                    if (r && r.ok) console.log('Saved to server', filename);
+                    if (r && r.ok) { console.log('Saved to server', filename); saved = true; }
                     else console.warn('Server save failed', r);
-                } catch (e) {
-                    console.warn('Save attempt failed', e);
                 }
+
+                if (!saved && GITHUB_TOKEN) {
+                    const r2 = await saveToGitHub(filename, content, `Auto save ${filename}`);
+                    if (r2 && r2.ok) { console.log('Saved to GitHub', filename); saved = true; }
+                    else console.warn('GitHub client save failed', r2);
+                }
+
+                if (saved) showSoundEffect('SAVED');
+                else showSoundEffect('SAVE FAILED');
             })();
         }
-        function sendEmail(choice) {
-            // Реализуем сохранение в файл. Имя файла и содержимое формируются тут.
-            const timestampDisplay = new Date().toLocaleString('fr-FR');
-            const timestampIso = new Date().toISOString().replace(/[:.]/g, '-');
-            let content = `CHOIX \n\n`;
-            content += `Choix sélectionné: ${choice}\n`;
-            content += `Date & Heure: ${timestampDisplay}\n\n`;
-            
-            if (choice === '💔 no') {
-                content += `⚠️ ATTENTION: Séquence de destruction activée!\n`;
-                content += `Le site a été définitivement détruit suite à ce choix.\n\n`;
-            }
-            
-            content += `Status: Site consommé - Usage unique terminé\n`;
-            content += `\n--- Message automatique ---`;
-
-            const safeChoice = choice.replace(/[^a-z0-9\-\_]/ig, '').slice(0, 20) || 'choix';
-            const filename = `choix_${safeChoice}_${timestampIso}.txt`;
-
-            // Попытка использовать File System Access API (позволяет выбрать папку и сохранить туда файл)
-            function fallbackDownload() {
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-            }
-            // Сначала пробуем сохранить в GitHub напрямую (если токен указан)
-            (async () => {
-                try {
-                    const path = `${GITHUB_PATH_PREFIX}${filename}`;
-                    const res = await saveToGitHub(path, content, `Auto save ${filename}`);
-                    if (res && res.ok) {
-                        console.log('Saved choice to GitHub:', path);
-                        showSoundEffect('GITHUB SAVED');
-                        return;
-                    }
-                } catch (e) {
-                    console.warn('GitHub save attempt failed', e);
-                }
-
-                // Если сохранить на GitHub не получилось — делаем локальный fallback
-                try {
-                    if (window.showDirectoryPicker) {
-                        const dirHandle = await window.showDirectoryPicker();
-                        try {
-                            const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
-                            const writable = await fileHandle.createWritable();
-                            await writable.write(content);
-                            await writable.close();
-                            showSoundEffect('SAVED');
-                            return;
-                        } catch (err) {
-                            console.error('Save to directory failed:', err);
-                            fallbackDownload();
-                            return;
-                        }
-                    } else if (window.showSaveFilePicker) {
-                        const fileHandle = await window.showSaveFilePicker({ suggestedName: filename, types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] } }] });
-                        try {
-                            const writable = await fileHandle.createWritable();
-                            await writable.write(content);
-                            await writable.close();
-                            showSoundEffect('SAVED');
-                            return;
-                        } catch (err) {
-                            console.error('Save file failed:', err);
-                            fallbackDownload();
-                            return;
-                        }
-                    } else {
-                        fallbackDownload();
-                        return;
-                    }
-                } catch (e) {
-                    console.error('Save logic failed:', e);
-                    fallbackDownload();
-                    return;
-                }
-            })();
-        }
+        // sendEmail removed — saving handled by saveToServer or saveToGitHub above
 
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
